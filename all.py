@@ -4,6 +4,9 @@ import cv2
 import numpy as np
 import argparse
 import random as rand
+
+globals_h=0
+globals_w=0
 def rotate_img(roi,roi_mask):
     
     degree=rand.randint(0,360)
@@ -38,10 +41,11 @@ def read_color(item):
     return color_dic[item]
 
 def find_mask(label_dir,img_dir):
+    global globals_h,globals_w
     img = cv2.imread(label_dir,cv2.IMREAD_COLOR)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     ori=cv2.imread(img_dir,cv2.IMREAD_COLOR)
-
+    globals_h,globals_w,_=ori.shape
     ret,thresh = cv2.threshold(gray,20,255,0)
 
     # cv2.namedWindow("kk",0)
@@ -82,6 +86,7 @@ def find_mask(label_dir,img_dir):
 
 def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
 
+    global globals_h,globals_w
     # roi=cv2.imread("roi.jpg")
     # roi_mask=cv2.imread("roi_mask.jpg")
 
@@ -102,8 +107,10 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
     # cv2.waitKey(0)
 
     src=cv2.imread(img_dir)
-    src=cv2.resize(src,(4032,3024))
-
+    src_h,src_w,_=src.shape
+    if globals_h>src_h or globals_w>src_w :
+        src=cv2.resize(src,(globals_w,globals_h))
+    
     w_add,h_add,_=src.shape
 
     delete_length=max(w,h)
