@@ -1,7 +1,8 @@
 # Data_amplification
-1. -> put your "background img" to background/
-2. -> put your "want to train img" to data/
-3. -> each file in data/ should have classes you want to amplification and make sure each classes folder contain img/ and label/
-4. -> python3 all.py
-5. -> the file you amplificate would exit in output
-6. -> enjoy!!
+1. -> use labelme to get label.png 
+2. -> put your "background img" to background/
+3. -> put your "want to train img" to data/
+4. -> each file in data/ should have classes you want to amplification and make sure each classes folder contain img/ and label/
+5. -> python3 all.py
+6. -> the file you amplificate would exit in output
+7. -> enjoy!!
