@@ -97,7 +97,7 @@ def find_mask(label_dir,img_dir):
 
     # cv2.imwrite("roi.jpg",roi)
     # cv2.imwrite("roi_mask.jpg",roi_mask)
-    print("label have been detected")
+    #print("label have been detected")
     
     roi,roi_mask=rotate_img(roi,roi_mask)
     
@@ -195,7 +195,7 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
 
     # cv2.imshow("kk",ground_truth)
     # cv2.waitKey(0)
-    print("generate done\n")
+    #print("generate done\n")
     return src,ground_truth
 
 def main():
@@ -207,7 +207,7 @@ def main():
 
     numbertimes=FLAGS.num
     num_each_frame=FLAGS.num_each
-    num_each_frame=num_each_frame.split(' ')
+    num_each_frame=num_each_frame.split(',')
     
     data_dir=os.listdir("data/")   
     path_ground="background/"
@@ -215,21 +215,32 @@ def main():
     filename_ground = os.listdir(directory_background)
     
     read_color_from_file()
+    
     for num_frame in num_each_frame:
-        for filename_ground in filename_ground:
-            file_ground=filename_ground.decode("utf-8")
+        
+        for each_filename_ground in filename_ground:
+            path_ground="background/"
+            file_ground=each_filename_ground.decode("utf-8")
+            
             path_ground=path_ground + file_ground
+            
             for ll in range(numbertimes):
                 times=0
                 data_dir_want=list()
-                if num_each_frame[0]==str(0):
+                if num_frame==str(0):
+                    
                     data_dir_want=data_dir
                 elif int(num_frame) == len(data_dir):
                     data_dir_want=data_dir
                 else:
-                    for lkk in range(int(num_frame)):
-                        num_fold=rand.randint(0,len(data_dir)-1)
-                        data_dir_want.append(data_dir[num_fold])
+                    resultList=list()
+                    # for lkk in range(int(num_frame)):
+                    #     num_fold=rand.randint(0,len(data_dir)-1)
+                    #     data_dir_want.append(data_dir[num_fold])
+                    resultList=rand.sample(range(0,len(data_dir)),int(num_frame))
+                    #print(resultList)
+                    for lkk in resultList:
+                        data_dir_want.append(data_dir[lkk])
 
                 #print(data_dir_want)
                 for i in (data_dir_want):
@@ -263,6 +274,7 @@ def main():
 
                         cv2.imwrite("output/label/ground_truth_"+i_want+".jpg",ground_truth)
                         cv2.imwrite("output/src/src_"+i_want+".jpg",src)
+                        print("generate done")
                     else:
                         cv2.imwrite("temp/temp_label.jpg",ground_truth)
                         cv2.imwrite("temp/temp_img.jpg",src)
