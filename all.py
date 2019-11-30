@@ -7,6 +7,7 @@ import random as rand
 
 globals_h=0
 globals_w=0
+color_dict=dict()
 def rotate_img(roi,roi_mask):
     
     degree=rand.randint(0,360)
@@ -32,13 +33,32 @@ def rotate_img(roi,roi_mask):
     # perform the actual rotation and return the image
     return cv2.warpAffine(roi, M, (nW, nH)),cv2.warpAffine(roi_mask, M, (nW, nH))    
 
-color_dic=dict()
+def read_color_from_file():
+    global color_dict
+    f=open("color.txt")
+    color_dict=dict()
+    for line in f:
+        line_list=line.split(' ')
+
+        color_index=line_list[0]
+        color_information_temp=line_list[1]
+            
+        color_information=color_information_temp[0:-2]
+        
+        color_information_temp=color_information.split(',')
+
+        color_information_tuple=(int(color_information_temp[0]),int(color_information_temp[1]),int(color_information_temp[2]))
+
+        color_dict[color_index]=color_information_tuple
+
+
 def set_color(item,color):
-    if item not in color_dic:
-        color_dic[item]=color
+    if item not in color_dict:
+        color_dict[item]=color
 
 def read_color(item):
-    return color_dic[item]
+    global color_dict
+    return color_dict[item]
 
 def find_mask(label_dir,img_dir):
     global globals_h,globals_w
@@ -179,57 +199,74 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
     return src,ground_truth
 
 def main():
+    
     parser = argparse.ArgumentParser()
-    parser.add_argument('--num', type=int, default='5', help='Number of object label')
+    parser.add_argument('--num', type=int, default='5', help='Number of times generate')
+    parser.add_argument('--num_each', type=str, default='0', help='Number of object in each frame')
     FLAGS = parser.parse_args()
 
     numbertimes=FLAGS.num
-
+    num_each_frame=FLAGS.num_each
+    num_each_frame=num_each_frame.split(' ')
+    
     data_dir=os.listdir("data/")   
     path_ground="background/"
     directory_background = os.fsencode(path_ground)
     filename_ground = os.listdir(directory_background)
     
-    for filename_ground in filename_ground:
-        file_ground=filename_ground.decode("utf-8")
-        path_ground=path_ground + file_ground
-        for ll in range(numbertimes):
-            times=0
-            for i in (data_dir):
-                b,g,r=rand.randint(0,255),rand.randint(0,255),rand.randint(0,255)
-                set_color(i,(b,g,r))
-
-                path_img="data/"+i+"/img/"
-                path_label="data/"+i+"/label/"
-
-                directory_img = os.fsencode(path_img)
-                filename_img = os.listdir(directory_img)
-                index=rand.randint(0,len(filename_img)-1)
-                file_img=filename_img[index].decode("utf-8")
-                path_img=path_img + file_img
-                number=file_img[0:1]
-
-                path_label=path_label+number+".png"    
-
-
-                roi,roi_mask=find_mask(path_label,path_img)
-
-                if(times==0):
-                    src,ground_truth = overlay(roi,roi_mask,path_ground,"0",i)
+    read_color_from_file()
+    for num_frame in num_each_frame:
+        for filename_ground in filename_ground:
+            file_ground=filename_ground.decode("utf-8")
+            path_ground=path_ground + file_ground
+            for ll in range(numbertimes):
+                times=0
+                data_dir_want=list()
+                if num_each_frame[0]==str(0):
+                    data_dir_want=data_dir
+                elif int(num_frame) == len(data_dir):
+                    data_dir_want=data_dir
                 else:
-                    #roi,roi_mask=find_mask("temp_label.jpg","temp_img.jpg")
-                    src,ground_truth = overlay(roi,roi_mask,"temp/temp_img.jpg","temp/temp_label.jpg",i)
-                if(times==len(data_dir)-1):
-                    import datetime
-                    x = datetime.datetime.now()
-                    i_want=str(x.month)+"_"+str(x.day)+"_"+str(x.hour)+"_"+str(x.minute)+"_"+str(x.second)
+                    for lkk in range(int(num_frame)):
+                        num_fold=rand.randint(0,len(data_dir)-1)
+                        data_dir_want.append(data_dir[num_fold])
 
-                    cv2.imwrite("output/label/ground_truth_"+i_want+".jpg",ground_truth)
-                    cv2.imwrite("output/src/src_"+i_want+".jpg",src)
-                else:
-                    cv2.imwrite("temp/temp_label.jpg",ground_truth)
-                    cv2.imwrite("temp/temp_img.jpg",src)
-                times=times+1
+                #print(data_dir_want)
+                for i in (data_dir_want):
+                    # b,g,r=rand.randint(0,255),rand.randint(0,255),rand.randint(0,255)
+                    # set_color(i,(b,g,r))
+
+                    path_img="data/"+i+"/img/"
+                    path_label="data/"+i+"/label/"
+
+                    directory_img = os.fsencode(path_img)
+                    filename_img = os.listdir(directory_img)
+                    index=rand.randint(0,len(filename_img)-1)
+                    file_img=filename_img[index].decode("utf-8")
+                    path_img=path_img + file_img
+                    number=file_img[0:1]
+
+                    path_label=path_label+number+".png"    
+
+
+                    roi,roi_mask=find_mask(path_label,path_img)
+
+                    if(times==0):
+                        src,ground_truth = overlay(roi,roi_mask,path_ground,"0",i)
+                    else:
+                        src,ground_truth = overlay(roi,roi_mask,"temp/temp_img.jpg","temp/temp_label.jpg",i)
+                    
+                    if(times==len(data_dir_want)-1):
+                        import datetime
+                        x = datetime.datetime.now()
+                        i_want=str(x.month)+"_"+str(x.day)+"_"+str(x.hour)+"_"+str(x.minute)+"_"+str(x.second)
+
+                        cv2.imwrite("output/label/ground_truth_"+i_want+".jpg",ground_truth)
+                        cv2.imwrite("output/src/src_"+i_want+".jpg",src)
+                    else:
+                        cv2.imwrite("temp/temp_label.jpg",ground_truth)
+                        cv2.imwrite("temp/temp_img.jpg",src)
+                    times=times+1
 
 
     print("finish")
