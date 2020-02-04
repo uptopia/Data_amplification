@@ -4,9 +4,8 @@
 3. -> put your "want to train img" to data/
 4. -> files in data/ should have classes you want to amplification and make sure each classes folder contain img/ and label/
       make sure img.jpg and label.png have same name i.e. 1.jpg 1.png
-5. -> python3 set_color.py
-6. -> python3 all.py (also you can use python3 all.py --num_each 2,0 --num 1)
-7. -> the file you amplificate would exit in output
-8. -> enjoy!!
+5. -> python3 all.py (also you can use python3 all.py --num_each 2,0 --num 1)
+6. -> the file you amplificate would exit in output
+7. -> enjoy!!
 
 total number of photo generated is num * number_of_background * length_of_num_each
