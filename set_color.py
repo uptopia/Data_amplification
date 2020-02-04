@@ -5,7 +5,7 @@ print(data_dir)
 
 color_dict=dict()
 
-f=open("color.txt")
+f=open("color.txt","w+")
 for line in f:
     print(line,end='')
     line_list=line.split(' ')
@@ -18,8 +18,6 @@ for line in f:
     color_dict[color_index]=color_information
 
     print("color_index",color_index,"color_information",color_information,"\n")
-    
-print(color_dict)
 
 for index in data_dir:
     if index not in color_dict:
