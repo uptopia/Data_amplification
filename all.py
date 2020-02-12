@@ -10,10 +10,9 @@ globals_h=0
 globals_w=0
 color_dict=dict()
 global_times=0
-def rotate_img(roi,roi_mask):
+def rotate_img(roi,roi_mask,roi_mask_realywant):
     
     degree=rand.randint(0,360)
-
     (h, w) = roi.shape[:2]
     (cX, cY) = (w // 2, h // 2)
  
@@ -35,88 +34,40 @@ def rotate_img(roi,roi_mask):
     # perform the actual rotation and return the image
     roi =cv2.warpAffine(roi, M, (nW, nH))
     roi_mask=cv2.warpAffine(roi_mask, M, (nW, nH))  
-    return roi,roi_mask
+    roi_mask_realywant=cv2.warpAffine(roi_mask_realywant, M, (nW, nH))
+    return roi,roi_mask,roi_mask_realywant
 
-# def read_color_from_file():
-#     global color_dict
-#     f=open("color.txt")
-#     color_dict=dict()
-#     for line in f:
-#         line_list=line.split(' ')
-
-#         color_index=line_list[0]
-#         color_information_temp=line_list[1]
-            
-#         color_information=color_information_temp[0:-2]
-        
-#         color_information_temp=color_information.split(',')
-
-#         color_information_tuple=(int(color_information_temp[0]),int(color_information_temp[1]),int(color_information_temp[2]))
-
-#         color_dict[color_index]=color_information_tuple
-
-# def set_color(item,color):
-#     if item not in color_dict:
-#         color_dict[item]=color
-
-# def read_color(item):
-#     global color_dict
-#     return color_dict[item]
-
-def find_mask(label_dir,img_dir):
+def find_mask(label_dir,img_dir,realywant_dir):
     global globals_h,globals_w
-
     img = cv2.imread(label_dir,cv2.IMREAD_COLOR)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     ori=cv2.imread(img_dir,cv2.IMREAD_COLOR)
+    realywant=cv2.imread(realywant_dir,cv2.IMREAD_COLOR)
+
     globals_h,globals_w,_=ori.shape
+
     ret,thresh = cv2.threshold(gray,20,255,0)
-
-    # cv2.namedWindow("kk",0)
-    # cv2.resizeWindow("kk", 640, 480)
-
-    # cv2.imshow("kk",thresh)
-    # cv2.waitKey(0)
     contours,_=cv2.findContours(thresh,1,2)
     cnt=contours[0]
-
     x,y,w,h=cv2.boundingRect(cnt)
-    #print("x :"+str(x)+"\n"+"y :"+str(y)+"\n"+"w :"+str(w)+"\n"+"h :"+str(h))
-    #img=cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),15)
-    #ori_test=cv2.rectangle(ori,(x,y),(x+w,y+h),(0,255,0),15)
-
+    
     roi=ori[y:y+h, x:x+w]
     roi_mask=img[y:y+h, x:x+w]
+    roi_mask_realywant=realywant[y:y+h, x:x+w]
     
     
-    # cv2.imshow("kk",img)
-    # cv2.waitKey(0)
-
-    # cv2.imshow("kk",ori_test)
-    # cv2.waitKey(0)
-
-    # cv2.imshow("kk",roi)
-    # cv2.waitKey(0)
-    # cv2.imshow("kk",roi_mask)
-    # cv2.waitKey(0)
-
-    # cv2.imwrite("roi.jpg",roi)
-    # cv2.imwrite("roi_mask.jpg",roi_mask)
-    #print("label have been detected")
-
-
-    roi,roi_mask=rotate_img(roi,roi_mask)
+    roi,roi_mask,roi_mask_realywant=rotate_img(roi,roi_mask,roi_mask_realywant)
 
     # cv2.imshow("a",roi)
     # cv2.imshow("b",roi_mask)
+    # cv2.imshow("c",roi_mask_realywant)
     # cv2.waitKey(0)
-    return roi,roi_mask
+    return roi,roi_mask,roi_mask_realywant
 
-def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
+def overlay(roi,roi_mask,img_dir,ground_truth_dir,item,check,visualize_Mat):
 
     global globals_h,globals_w,global_times
-    # roi=cv2.imread("roi.jpg")
-    # roi_mask=cv2.imread("roi_mask.jpg")
+    
 
     w,h,_=roi.shape
     for i in range(w):
@@ -126,13 +77,6 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
                     roi[i][j][1]=0
                     roi[i][j][2]=0
 
-    # cv2.imshow("kk",roi_mask)
-    # cv2.waitKey(0)
-
-    # cv2.namedWindow("kk",0)
-    # cv2.resizeWindow("kk", (640, 480))
-    # cv2.imshow("kk",roi)
-    # cv2.waitKey(0)
 
     src=cv2.imread(img_dir)
     src_h,src_w,_=src.shape
@@ -160,52 +104,52 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
     process_key_x=place_x-w1
     process_key_y=place_y-h1
 
-    #print("process_key_x"+str(process_key_x)+"\n"+"process_key_y"+str(process_key_y))
-
-    '''import datetime
-    x = datetime.datetime.now()
-    i_want=str(x.month)+"_"+str(x.day)+"_"+str(x.hour)+"_"+str(x.minute)+"_"+str(x.second)'''
-    for i in range(w):
-        for j in range(h):
-                if (roi_mask[i][j][2]!=0 and roi_mask[i][j][2]>20):
-                    src[process_key_x+i][process_key_y+j][0]=roi[i][j][0]
-                    src[process_key_x+i][process_key_y+j][1]=roi[i][j][1]
-                    src[process_key_x+i][process_key_y+j][2]=roi[i][j][2]
-
-    '''cv2.imwrite("src/src_"+i_want+".jpg",src)'''
-
-    # src=cv2.resize(src,(800,640))
-    # cv2.imshow("kk",src)
-    # cv2.waitKey(0)
-    global_times=global_times+1
     if(ground_truth_dir=="0"):
-        ground_truth = np.zeros((w_add,h_add), np.uint8)
-        #b,g,r=read_color(item)
         for i in range(w):
             for j in range(h):
                     if (roi_mask[i][j][2]!=0 and roi_mask[i][j][2]>20):
+                        src[process_key_x+i][process_key_y+j][0]=roi[i][j][0]
+                        src[process_key_x+i][process_key_y+j][1]=roi[i][j][1]
+                        src[process_key_x+i][process_key_y+j][2]=roi[i][j][2]
+    else:
+        for i in range(w):
+            for j in range(h):
+                    if (roi_mask[i][j][2]!=0 and roi_mask[i][j][2]>20):
+                        src[process_key_x+i][process_key_y+j][0]=roi[i][j][0]
+                        src[process_key_x+i][process_key_y+j][1]=roi[i][j][1]
+                        src[process_key_x+i][process_key_y+j][2]=roi[i][j][2]
+
+                        visualize_Mat[process_key_x+i][process_key_y+j][0]=roi[i][j][0]
+                        visualize_Mat[process_key_x+i][process_key_y+j][1]=roi[i][j][1]
+                        visualize_Mat[process_key_x+i][process_key_y+j][2]=roi[i][j][2]
+
+        
+    global_times=global_times+1
+
+    if(ground_truth_dir=="0"):
+        ground_truth = np.zeros((w_add,h_add), np.uint8)
+        visualize_Mat=src.copy()
+        #b,g,r=read_color(item)
+
+        for i in range(w):
+            for j in range(h):
+                    if (roi_mask[i][j][2]!=0 and roi_mask[i][j][2]>20 and check[i][j][2]>20):
                         ground_truth[process_key_x+i][process_key_y+j]=global_times
+                        visualize_Mat[process_key_x+i][process_key_y+j][0]=200
         
 
     else :
-        # print("global_times : ",global_times)
         ground_truth=cv2.imread(ground_truth_dir)
         #b,g,r=read_color(item)
-        
+
         for i in range(w):
             for j in range(h):
-                    if (roi_mask[i][j][2]!=0 and roi_mask[i][j][2]>20):
+                    if (roi_mask[i][j][2]!=0 and roi_mask[i][j][2]>20 and check[i][j][2]>20):
                         ground_truth[process_key_x+i][process_key_y+j]=global_times
+                        visualize_Mat[process_key_x+i][process_key_y+j][0]=200
     
     
-    
-    '''cv2.imwrite("ground_truth/ground_truth_"+i_want+".jpg",ground_truth)'''
-    # ground_truth=cv2.resize(ground_truth,(800,640))
-
-    # cv2.imshow("kk",ground_truth)
-    # cv2.waitKey(0)
-    #print("generate done\n")
-    return src,ground_truth
+    return src,ground_truth,visualize_Mat
 
 def main():
     global global_times
@@ -224,10 +168,7 @@ def main():
     directory_background = os.fsencode(path_ground)
     filename_ground = os.listdir(directory_background)
     
-    # read_color_from_file()
-    
     for num_frame in num_each_frame:
-        
         for each_filename_ground in filename_ground:
             path_ground="background/"
             file_ground=each_filename_ground.decode("utf-8")
@@ -244,21 +185,15 @@ def main():
                     data_dir_want=data_dir
                 else:
                     resultList=list()
-                    # for lkk in range(int(num_frame)):
-                    #     num_fold=rand.randint(0,len(data_dir)-1)
-                    #     data_dir_want.append(data_dir[num_fold])
                     resultList=rand.sample(range(0,len(data_dir)),int(num_frame))
-                    #print(resultList)
                     for lkk in resultList:
                         data_dir_want.append(data_dir[lkk])
                 
-                #print(data_dir_want)
                 for i in (data_dir_want):
-                    # b,g,r=rand.randint(0,255),rand.randint(0,255),rand.randint(0,255)
-                    # set_color(i,(b,g,r))
-
+                    
                     path_img="data/"+i+"/img/"
                     path_label="data/"+i+"/label/"
+                    path_label_realywant="data/"+i+"/label_realywant/"
 
                     directory_img = os.fsencode(path_img)
                     filename_img = os.listdir(directory_img)
@@ -269,14 +204,15 @@ def main():
 
                     temp_number=file_img.split('.')
                     number=temp_number[0]
-                    path_label=path_label+number+".png"    
+                    path_label=path_label+number+".png"
+                    path_label_realywant=path_label_realywant+number+".png"    
                     
-                    roi,roi_mask=find_mask(path_label,path_img)
+                    roi,roi_mask,roi_mask_realywant=find_mask(path_label,path_img,path_label_realywant)
 
                     if(times==0):
-                        src,ground_truth = overlay(roi,roi_mask,path_ground,"0",i)
+                        src,ground_truth,visualize_Mat = overlay(roi,roi_mask,path_ground,"0",i,roi_mask_realywant,roi)
                     else:
-                        src,ground_truth = overlay(roi,roi_mask,"temp/temp_img.png","temp/temp_label.png",i)
+                        src,ground_truth,visualize_Mat = overlay(roi,roi_mask,"temp/temp_img.png","temp/temp_label.png",i,roi_mask_realywant,visualize_Mat)
                     
                     if(times==len(data_dir_want)-1):
                         # import datetime
@@ -291,13 +227,13 @@ def main():
                         ### PIL save photo
                         PIL_ground_truth = Image.fromarray(cv2.cvtColor(ground_truth,cv2.COLOR_BGR2RGB))
                         PIL_src = Image.fromarray(cv2.cvtColor(src,cv2.COLOR_BGR2RGB))
-                        
                         if PIL_ground_truth.mode!='P':
                             PIL_ground_truth=PIL_ground_truth.convert('L')
-
                         PIL_ground_truth.save("output/label/obj_"+str(i_want_index)+".png")
+
                         PIL_src.save("output/src/obj_"+str(i_want_index)+".png")
 
+                        cv2.imwrite("output/visualize/obj_"+str(i_want_index)+".png",visualize_Mat)
 
                         f = open("output/yaml/obj_"+str(i_want_index)+".yaml", "w")
                         f.write("label_names:\n")
