@@ -1,0 +1,6 @@
+set(get_rs_image_SETUP_PY_VERSION "0.0.0")
+set(get_rs_image_SETUP_PY_SCRIPTS "")
+set(get_rs_image_SETUP_PY_PACKAGES "get_rs_image")
+set(get_rs_image_SETUP_PY_PACKAGE_DIRS "scripts/get_rs_image")
+set(get_rs_image_SETUP_PY_MODULES "")
+set(get_rs_image_SETUP_PY_MODULE_DIRS "")

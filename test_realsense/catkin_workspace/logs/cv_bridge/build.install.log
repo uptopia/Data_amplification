@@ -1,0 +1,49 @@
+[  0%] Built target std_msgs_generate_messages_eus
+[  0%] Built target sensor_msgs_generate_messages_lisp
+[  0%] Built target sensor_msgs_generate_messages_cpp
+[  0%] Built target geometry_msgs_generate_messages_py
+[  0%] Built target sensor_msgs_generate_messages_py
+[  0%] Built target sensor_msgs_generate_messages_eus
+[  0%] Built target std_msgs_generate_messages_nodejs
+[  0%] Built target sensor_msgs_generate_messages_nodejs
+[  0%] Built target geometry_msgs_generate_messages_cpp
+[  0%] Built target std_msgs_generate_messages_cpp
+[  0%] Built target geometry_msgs_generate_messages_eus
+[  0%] Built target std_msgs_generate_messages_py
+[  0%] Built target std_msgs_generate_messages_lisp
+[  0%] Built target geometry_msgs_generate_messages_lisp
+[  0%] Built target geometry_msgs_generate_messages_nodejs
+[ 50%] Built target cv_bridge
+[100%] Built target cv_bridge_boost
+[36mInstall the project...[0m
+-- Install configuration: ""
+-- Installing: /home/iclab/Desktop/test/catkin_workspace/install/_setup_util.py
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/env.sh
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/setup.bash
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/local_setup.bash
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/setup.sh
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/local_setup.sh
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/setup.zsh
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/local_setup.zsh
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/.rosinstall
+-- Installing: /home/iclab/Desktop/test/catkin_workspace/install/lib/pkgconfig/cv_bridge.pc
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/share/cv_bridge/cmake/cv_bridge-extras.cmake
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/share/cv_bridge/cmake/cv_bridgeConfig.cmake
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/share/cv_bridge/cmake/cv_bridgeConfig-version.cmake
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/share/cv_bridge/package.xml
++ cd /home/iclab/Desktop/test/catkin_workspace/src/vision_opencv/cv_bridge
++ mkdir -p /home/iclab/Desktop/test/catkin_workspace/install/lib/python3/dist-packages
++ /usr/bin/env PYTHONPATH=/home/iclab/Desktop/test/catkin_workspace/install/lib/python3/dist-packages:/home/iclab/Desktop/test/catkin_workspace/build/cv_bridge/lib/python3/dist-packages:/home/iclab/Desktop/test/catkin_workspace/install/lib/python3/dist-packages:/home/iclab/Desktop/test/devel/lib/python2.7/dist-packages:/opt/ros/kinetic/lib/python2.7/dist-packages CATKIN_BINARY_DIR=/home/iclab/Desktop/test/catkin_workspace/build/cv_bridge /usr/bin/python3 /home/iclab/Desktop/test/catkin_workspace/src/vision_opencv/cv_bridge/setup.py build --build-base /home/iclab/Desktop/test/catkin_workspace/build/cv_bridge install --install-layout=deb --prefix=/home/iclab/Desktop/test/catkin_workspace/install --install-scripts=/home/iclab/Desktop/test/catkin_workspace/install/bin
+running build
+running build_py
+running install
+running install_lib
+running install_egg_info
+Removing /home/iclab/Desktop/test/catkin_workspace/install/lib/python3/dist-packages/cv_bridge-1.12.8.egg-info
+Writing /home/iclab/Desktop/test/catkin_workspace/install/lib/python3/dist-packages/cv_bridge-1.12.8.egg-info
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/include/cv_bridge
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/include/cv_bridge/cv_bridge.h
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/include/cv_bridge/rgb_colors.h
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/lib/python3/dist-packages/cv_bridge/boost/__init__.py
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/lib/libcv_bridge.so
+-- Up-to-date: /home/iclab/Desktop/test/catkin_workspace/install/lib/python3/dist-packages/cv_bridge/boost/cv_bridge_boost.so

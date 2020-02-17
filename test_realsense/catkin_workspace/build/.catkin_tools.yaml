@@ -1,0 +1,6 @@
+devel_space: /home/iclab/Desktop/test/catkin_workspace/devel
+install: true
+install_space: /home/iclab/Desktop/test/catkin_workspace/install
+profile: default
+source_space: /home/iclab/Desktop/test/catkin_workspace/src
+workspace: /home/iclab/Desktop/test/catkin_workspace

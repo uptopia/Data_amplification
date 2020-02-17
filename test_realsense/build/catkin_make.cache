@@ -1,0 +1,2 @@
+rs_d435i/get_rs_image:rs_d435i/realsense-ros/realsense2_camera:rs_d435i/realsense-ros/realsense2_description:rs_d435i/test_rs_img
+-DCATKIN_DEVEL_PREFIX=/home/iclab/Desktop/test/devel -DCMAKE_INSTALL_PREFIX=/home/iclab/Desktop/test/install -G Unix Makefiles

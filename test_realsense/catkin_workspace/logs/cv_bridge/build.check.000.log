@@ -1,0 +1,24 @@
+[36m--[0m Using CATKIN_DEVEL_PREFIX: /home/iclab/Desktop/test/catkin_workspace/devel/.private/cv_bridge
+[36m--[0m Using CMAKE_PREFIX_PATH: /home/iclab/Desktop/test/catkin_workspace/install;/opt/ros/kinetic
+[36m--[0m This workspace overlays: /home/iclab/Desktop/test/catkin_workspace/install;/opt/ros/kinetic
+[36m--[0m Found PythonInterp: /usr/bin/python3 (found suitable version "3.5.2", minimum required is "2")
+[36m--[0m Using PYTHON_EXECUTABLE: /usr/bin/python3
+[36m--[0m Using Debian Python package layout
+[36m--[0m Using empy: /usr/bin/empy
+[36m--[0m Using CATKIN_ENABLE_TESTING: ON
+[36m--[0m Call enable_testing()
+[36m--[0m Using CATKIN_TEST_RESULTS_DIR: /home/iclab/Desktop/test/catkin_workspace/build/cv_bridge/test_results
+[36m--[0m Found gtest sources under '/usr/src/gmock': gtests will be built
+[36m--[0m Found gmock sources under '/usr/src/gmock': gmock will be built
+[36m--[0m Found PythonInterp: /usr/bin/python3 (found version "3.5.2")
+[36m--[0m Using Python nosetests: /usr/bin/nosetests
+[36m--[0m catkin 0.7.20
+[36m--[0m BUILD_SHARED_LIBS is on
+[36m--[0m Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.5m.so (found version "3.5.2")
+[36m--[0m Boost version: 1.58.0
+[36m--[0m Found the following Boost libraries:
+[36m--[0m   python-py35
+[36m--[0m Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.5m.so (found suitable version "3.5.2", minimum required is "3.5")
+[36m--[0m Configuring done
+[36m--[0m Generating done
+[36m--[0m Build files have been written to: /home/iclab/Desktop/test/catkin_workspace/build/cv_bridge
