@@ -10,6 +10,7 @@ globals_h=0
 globals_w=0
 color_dict=dict()
 global_times=0
+global_scale=1.0
 def rotate_img(roi,roi_mask,roi_mask_realywant):
     
     degree=rand.randint(0,360)
@@ -19,7 +20,7 @@ def rotate_img(roi,roi_mask,roi_mask_realywant):
     # grab the rotation matrix (applying the negative of the
     # angle to rotate clockwise), then grab the sine and cosine
     # (i.e., the rotation components of the matrix)
-    M = cv2.getRotationMatrix2D((cX, cY), degree, 1.0)
+    M = cv2.getRotationMatrix2D((cX, cY), degree, global_scale)
     cos = np.abs(M[0, 0])
     sin = np.abs(M[0, 1])
  
@@ -97,9 +98,9 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item,check,visualize_Mat):
         
 
     if(h%2!=0):
-        h1=w//2+1
+        h1=h//2+1
     else:
-        h1=w//2
+        h1=h//2
         
     process_key_x=place_x-w1
     process_key_y=place_y-h1
@@ -152,17 +153,20 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item,check,visualize_Mat):
     return src,ground_truth,visualize_Mat
 
 def main():
-    global global_times
+    global global_times,global_scale
     i_want_index=0
     parser = argparse.ArgumentParser()
     parser.add_argument('--num', type=int, default='5', help='Number of times generate')
     parser.add_argument('--num_each', type=str, default='0', help='Number of object in each frame')
+    parser.add_argument('--scale', type=float, default='1.0', help='persentage of size change')
     FLAGS = parser.parse_args()
 
     numbertimes=FLAGS.num
     num_each_frame=FLAGS.num_each
     num_each_frame=num_each_frame.split(',')
     
+    global_scale=FLAGS.scale
+
     data_dir=os.listdir("data/")   
     path_ground="background/"
     directory_background = os.fsencode(path_ground)
