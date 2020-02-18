@@ -95,9 +95,8 @@ def find_mask(label_dir,img_dir):
     # cv2.imshow("kk",ori_test)
     # cv2.waitKey(0)
 
-    # cv2.imshow("kk",roi)
-    # cv2.waitKey(0)
-    # cv2.imshow("kk",roi_mask)
+    # cv2.imshow("1",roi)
+    # cv2.imshow("2",roi_mask)
     # cv2.waitKey(0)
 
     # cv2.imwrite("roi.jpg",roi)
@@ -153,9 +152,9 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
         
 
     if(h%2!=0):
-        h1=w//2+1
+        h1=h//2+1
     else:
-        h1=w//2
+        h1=h//2
         
     process_key_x=place_x-w1
     process_key_y=place_y-h1
