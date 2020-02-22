@@ -1,0 +1,24 @@
+# test img data
+*.jpg
+*.png
+*.jpeg
+
+# train data
+#*train_data*
+
+# Byte-compiled / optimized / DLL files
+# __pycache__/
+# *.py[cod]
+# *$py.class
+
+# Data files and directories common in repo root
+background/
+img/
+src/
+label/
+yaml/
+amazon/
+bag/
+card/
+sucker/
+temp/
