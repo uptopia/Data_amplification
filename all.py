@@ -80,10 +80,7 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item,check,visualize_Mat):
 
 
     src=cv2.imread(img_dir)
-    src_h,src_w,_=src.shape
-    # if globals_h>src_h or globals_w>src_w :
-    #     src=cv2.resize(src,(globals_w,globals_h))
-    
+     
     w_add,h_add,_=src.shape
 
     delete_length=max(w,h)
