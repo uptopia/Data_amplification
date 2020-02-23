@@ -135,15 +135,15 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
 
     src=cv2.imread(img_dir)
     src_h,src_w,_=src.shape
-    if globals_h>src_h or globals_w>src_w :
-        src=cv2.resize(src,(globals_w,globals_h))
+    # if globals_h>src_h or globals_w>src_w :
+    #     src=cv2.resize(src,(globals_w,globals_h))
     
     w_add,h_add,_=src.shape
 
     delete_length=max(w,h)
 
-    place_x=rand.randint(min(delete_length,(w_add-delete_length)),max(delete_length,(w_add-delete_length)))
-    place_y=rand.randint(min(delete_length,(h_add-delete_length)),max(delete_length,(h_add-delete_length)))
+    place_x=rand.randint(int(delete_length//2),w_add-int(delete_length//2))
+    place_y=rand.randint(int(delete_length//2),h_add-int(delete_length//2))
 
     if(w%2!=0):
         w1=w//2+1
