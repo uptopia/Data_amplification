@@ -9,9 +9,22 @@ from PIL import Image
 globals_h=0
 globals_w=0
 color_dict=dict()
+global_scale=1.0
 global_times=0
+global_background_multi=1.0
+def consider_scale(mat_multi):
+    global global_background_multi
+    persentage=mat_multi/global_background_multi
+    #print("--------------",persentage)
+    if persentage > 0.08 :
+        return 0.4
+    elif persentage<0.04:
+        return 1.5
+    else :
+        return 1.0
+
 def rotate_img(roi,roi_mask):
-    
+    global global_scale
     degree=rand.randint(0,360)
 
     (h, w) = roi.shape[:2]
@@ -20,7 +33,7 @@ def rotate_img(roi,roi_mask):
     # grab the rotation matrix (applying the negative of the
     # angle to rotate clockwise), then grab the sine and cosine
     # (i.e., the rotation components of the matrix)
-    M = cv2.getRotationMatrix2D((cX, cY), degree, 1.0)
+    M = cv2.getRotationMatrix2D((cX, cY), degree, consider_scale(h*w))
     cos = np.abs(M[0, 0])
     sin = np.abs(M[0, 1])
  
@@ -207,14 +220,16 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
     return src,ground_truth
 
 def main():
-    global global_times
+    global global_times,global_scale,global_background_multi
     i_want_index=0
     parser = argparse.ArgumentParser()
     parser.add_argument('--num', type=int, default='5', help='Number of times generate')
     parser.add_argument('--num_each', type=str, default='0', help='Number of object in each frame')
+    parser.add_argument('--scale', type=float, default='1.0', help='persentage of size change')
     FLAGS = parser.parse_args()
 
     numbertimes=FLAGS.num
+    global_scale=FLAGS.scale
     num_each_frame=FLAGS.num_each
     num_each_frame=num_each_frame.split(',')
     
@@ -232,7 +247,10 @@ def main():
             file_ground=each_filename_ground.decode("utf-8")
             
             path_ground=path_ground + file_ground
-            
+            a=cv2.imread(path_ground)
+            a_w,a_h,_=a.shape
+            del a
+            global_background_multi=a_w*a_h
             for ll in range(numbertimes):
                 times=0
                 data_dir_want=list()
