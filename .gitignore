@@ -13,12 +13,7 @@
 
 # Data files and directories common in repo root
 background/
-img/
-src/
-label/
-yaml/
 amazon/
 bag/
 card/
 sucker/
-temp/
