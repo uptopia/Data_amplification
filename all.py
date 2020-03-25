@@ -16,12 +16,14 @@ def consider_scale(mat_multi):
     global global_background_multi
     persentage=mat_multi/global_background_multi
     #print("--------------",persentage)
-    if persentage > 0.08 :
-        return 0.4
-    elif persentage<0.04:
-        return 1.5
+    if persentage > 0.1 :
+        return 0.2
+    elif persentage > 0.035 :
+        return 0.55
+    elif persentage<0.01:
+        return 1.7
     else :
-        return 1.0
+        return 0.7
 
 def rotate_img(roi,roi_mask):
     global global_scale
