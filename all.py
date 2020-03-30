@@ -11,6 +11,20 @@ globals_w=0
 color_dict=dict()
 global_times=0
 global_scale=1.0
+global_background_multi=1
+def consider_scale(mat_multi):
+    global global_background_multi
+    persentage=mat_multi/global_background_multi
+    #print("--------------",persentage)
+    if persentage > 0.1 :
+        return 0.3
+    elif persentage > 0.04 :
+        return 0.45
+    elif persentage<0.01:
+        return 2.0
+    else :
+        return 0.6
+
 def rotate_img(roi,roi_mask,roi_mask_realywant):
     
     degree=rand.randint(0,360)
@@ -20,7 +34,7 @@ def rotate_img(roi,roi_mask,roi_mask_realywant):
     # grab the rotation matrix (applying the negative of the
     # angle to rotate clockwise), then grab the sine and cosine
     # (i.e., the rotation components of the matrix)
-    M = cv2.getRotationMatrix2D((cX, cY), degree, global_scale)
+    M = cv2.getRotationMatrix2D((cX, cY), degree, consider_scale(h*w))
     cos = np.abs(M[0, 0])
     sin = np.abs(M[0, 1])
  
@@ -152,7 +166,7 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item,check,visualize_Mat):
     return src,ground_truth,visualize_Mat
 
 def main():
-    global global_times,global_scale
+    global global_times,global_scale,global_background_multi
     i_want_index=0
     parser = argparse.ArgumentParser()
     parser.add_argument('--num', type=int, default='5', help='Number of times generate')
@@ -177,6 +191,11 @@ def main():
             file_ground=each_filename_ground.decode("utf-8")
             
             path_ground=path_ground + file_ground
+
+            a=cv2.imread(path_ground)
+            a_w,a_h,_=a.shape
+            del a
+            global_background_multi=a_w*a_h
             
             for ll in range(numbertimes):
                 times=0
