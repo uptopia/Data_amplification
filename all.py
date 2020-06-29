@@ -8,7 +8,7 @@ from PIL import Image
 
 globals_h=0
 globals_w=0
-color_dict=dict()
+item_dict=dict()
 global_scale=1.0
 global_times=0
 global_background_multi=1.0
@@ -52,32 +52,17 @@ def rotate_img(roi,roi_mask):
     roi_mask=cv2.warpAffine(roi_mask, M, (nW, nH))  
     return roi,roi_mask
 
-# def read_color_from_file():
-#     global color_dict
-#     f=open("color.txt")
-#     color_dict=dict()
-#     for line in f:
-#         line_list=line.split(' ')
-
-#         color_index=line_list[0]
-#         color_information_temp=line_list[1]
-            
-#         color_information=color_information_temp[0:-2]
-        
-#         color_information_temp=color_information.split(',')
-
-#         color_information_tuple=(int(color_information_temp[0]),int(color_information_temp[1]),int(color_information_temp[2]))
-
-#         color_dict[color_index]=color_information_tuple
-
-# def set_color(item,color):
-#     if item not in color_dict:
-#         color_dict[item]=color
-
-# def read_color(item):
-#     global color_dict
-#     return color_dict[item]
-
+def read_item_from_file():
+    global item_dict
+    f=open("item.txt")
+    i=0
+    for line in f:
+        if '\n' in line :
+            line = line[0:len(line)-1]
+        item_dict[line]=i
+        i=i+1
+    print(item_dict)
+# illllla=0
 def find_mask(label_dir,img_dir):
     global globals_h,globals_w
 
@@ -85,6 +70,7 @@ def find_mask(label_dir,img_dir):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     ori=cv2.imread(img_dir,cv2.IMREAD_COLOR)
     globals_h,globals_w,_=ori.shape
+
     ret,thresh = cv2.threshold(gray,20,255,0)
 
     # cv2.namedWindow("kk",0)
@@ -121,18 +107,31 @@ def find_mask(label_dir,img_dir):
 
     roi,roi_mask=rotate_img(roi,roi_mask)
 
+    gray = cv2.cvtColor(roi_mask, cv2.COLOR_BGR2GRAY)
+    ret,thresh = cv2.threshold(gray,20,255,0)
+    contours,_=cv2.findContours(thresh,1,2)
+    cnt=contours[0]
+    x,y,w,h=cv2.boundingRect(cnt)
+
+    roi=roi[y:y+h, x:x+w]
+    roi_mask=roi_mask[y:y+h, x:x+w]
+
+    # cv2.imwrite("./output/test/"+str(illllla)+".jpg",roi_mask)
+    # illllla+=1
+    
     # cv2.imshow("a",roi)
     # cv2.imshow("b",roi_mask)
     # cv2.waitKey(0)
     return roi,roi_mask
 
-def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
+def overlay(roi,roi_mask,img_dir,ground_truth_dir,item,centerxy_w_h):
 
     global globals_h,globals_w,global_times
     # roi=cv2.imread("roi.jpg")
     # roi_mask=cv2.imread("roi_mask.jpg")
 
     w,h,_=roi.shape
+    
     for i in range(w):
         for j in range(h):
                 if not(roi_mask[i][j][2]!=0 and roi_mask[i][j][2]>20):
@@ -142,7 +141,8 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
 
     # cv2.imshow("kk",roi_mask)
     # cv2.waitKey(0)
-
+    
+    
     # cv2.namedWindow("kk",0)
     # cv2.resizeWindow("kk", (640, 480))
     # cv2.imshow("kk",roi)
@@ -157,8 +157,11 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
 
     delete_length=max(w,h)
 
-    place_x=rand.randint(int(delete_length//2),w_add-int(delete_length//2))
-    place_y=rand.randint(int(delete_length//2),h_add-int(delete_length//2))
+    # place_x=rand.randint(int(delete_length//2),w_add-int(delete_length//2))
+    # place_y=rand.randint(int(delete_length//2),h_add-int(delete_length//2))
+
+    place_x=rand.uniform(int(delete_length//2),w_add-int(delete_length//2))
+    place_y=rand.uniform(int(delete_length//2),h_add-int(delete_length//2))
 
     if(w%2!=0):
         w1=w//2+1
@@ -171,8 +174,8 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
     else:
         h1=h//2
         
-    process_key_x=place_x-w1
-    process_key_y=place_y-h1
+    process_key_x=int(place_x)-w1
+    process_key_y=int(place_y)-h1
 
     #print("process_key_x"+str(process_key_x)+"\n"+"process_key_y"+str(process_key_y))
 
@@ -210,8 +213,12 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
             for j in range(h):
                     if (roi_mask[i][j][2]!=0 and roi_mask[i][j][2]>20):
                         ground_truth[process_key_x+i][process_key_y+j]=global_times
-    
-    
+    temp_centerxy_w_h=[]
+    temp_centerxy_w_h.append(place_x)
+    temp_centerxy_w_h.append(place_y)
+    temp_centerxy_w_h.append(w)
+    temp_centerxy_w_h.append(h)
+    centerxy_w_h.append(temp_centerxy_w_h)
     
     '''cv2.imwrite("ground_truth/ground_truth_"+i_want+".jpg",ground_truth)'''
     # ground_truth=cv2.resize(ground_truth,(800,640))
@@ -219,10 +226,11 @@ def overlay(roi,roi_mask,img_dir,ground_truth_dir,item):
     # cv2.imshow("kk",ground_truth)
     # cv2.waitKey(0)
     #print("generate done\n")
-    return src,ground_truth
+    return src,ground_truth,centerxy_w_h
 
 def main():
-    global global_times,global_scale,global_background_multi
+    read_item_from_file()
+    global global_times,global_scale,global_background_multi,item_dict
     i_want_index=0
     parser = argparse.ArgumentParser()
     parser.add_argument('--num', type=int, default='5', help='Number of times generate')
@@ -240,7 +248,7 @@ def main():
     directory_background = os.fsencode(path_ground)
     filename_ground = os.listdir(directory_background)
     
-    # read_color_from_file()
+    centerxy_w_h=list()
     
     for num_frame in num_each_frame:
         
@@ -257,7 +265,6 @@ def main():
                 times=0
                 data_dir_want=list()
                 if num_frame==str(0):
-                    
                     data_dir_want=data_dir
                 elif int(num_frame) == len(data_dir):
                     data_dir_want=data_dir
@@ -293,9 +300,9 @@ def main():
                     roi,roi_mask=find_mask(path_label,path_img)
 
                     if(times==0):
-                        src,ground_truth = overlay(roi,roi_mask,path_ground,"0",i)
+                        src,ground_truth,centerxy_w_h = overlay(roi,roi_mask,path_ground,"0",i,centerxy_w_h)
                     else:
-                        src,ground_truth = overlay(roi,roi_mask,"temp/temp_img.png","temp/temp_label.png",i)
+                        src,ground_truth,centerxy_w_h = overlay(roi,roi_mask,"temp/temp_img.png","temp/temp_label.png",i,centerxy_w_h)
                     
                     if(times==len(data_dir_want)-1):
                         # import datetime
@@ -327,6 +334,20 @@ def main():
                             else :    
                                 f.write("- "+item_to_yaml+"\n")
 
+                        f = open("output/yolo_mark/obj_"+str(i_want_index)+".txt", "w")
+                        iiiiii=0
+                        for yolo_mark_simulator in data_dir_want:
+                            f.write(str(item_dict[yolo_mark_simulator])+' ')
+                            center_x=float("{:.6f}".format(float(centerxy_w_h[iiiiii][1]/a_h)))
+                            center_y=float("{:.6f}".format(float(centerxy_w_h[iiiiii][0]/a_w)))
+                            w_yolo=float("{:.6f}".format(float(centerxy_w_h[iiiiii][3]/a_h)))
+                            h_yolo=float("{:.6f}".format(float(centerxy_w_h[iiiiii][2]/a_w)))
+                            f.write(str(center_x)+' '+str(center_y)+' '+str(w_yolo)+' '+str(h_yolo))
+                            f.write('\n')
+                            iiiiii=iiiiii+1
+
+                        #print(centerxy_w_h)
+                        centerxy_w_h=list()
                         i_want_index+=1
                         print("generate done")
                         global_times=0
